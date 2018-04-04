@@ -1,9 +1,9 @@
-#include <SPI.h>
+ï»¿#include <SPI.h>
 #include "mcp_can.h"
 #include <EEPROM.h>
 
 const int SPI_CS_PIN = 9;
-MCP_CAN CAN(SPI_CS_PIN);                  // ÉèÖÃ CS Òı½Å
+MCP_CAN CAN(SPI_CS_PIN);                  // è®¾ç½® CS å¼•è„š
 
 unsigned char flagRecv = 0;
 unsigned char len = 0;
@@ -11,16 +11,16 @@ unsigned char buf[8];
 
 #define MaxNum 20
 #define N 8   
-#define YM 01//ÑÚÂë
-/*Î»Óë&£º²é¿´Ò»¸öÎ»
-  Î»ÒÆ>>£ºÏò×óÒÆ¶¯Î»*/
+#define YM 01//æ©ç 
+/*ä½ä¸&ï¼šæŸ¥çœ‹ä¸€ä¸ªä½
+  ä½ç§»>>ï¼šå‘å·¦ç§»åŠ¨ä½*/
 
 struct electromagnet
 {
-  char ID[MaxNum];     //µç´ÅÌúĞòºÅ
-  char pin[MaxNum];   //Ã¿¸öµç´ÅÌúËù¶ÔÓ¦µÄArduinoÉÏÒı½ÅÎ»ÖÃ
-  char FA[MaxNum];    //·§µÄÁ¬½Ó·½Ê½
-  char state[MaxNum];//Ã¿¸öµç´ÅÌúËù¶ÔÓ¦Òı½Å×´Ì¬
+  char ID[MaxNum];     //ç”µç£é“åºå·
+  char pin[MaxNum];   //æ¯ä¸ªç”µç£é“æ‰€å¯¹åº”çš„Arduinoä¸Šå¼•è„šä½ç½®
+  char FA[MaxNum];    //é˜€çš„è¿æ¥æ–¹å¼
+  char state[MaxNum];//æ¯ä¸ªç”µç£é“æ‰€å¯¹åº”å¼•è„šçŠ¶æ€
 } ELMA;
 
 struct DATA
@@ -35,7 +35,7 @@ void setup()
 {
   Serial.begin(115200);         //baudrate=500k
 
-  //³õÊ¼»¯¶ÁÈ¡EEPROMÖĞĞÅÏ¢²¢³õÊ¼»¯ Òı½Å×´Ì¬
+  //åˆå§‹åŒ–è¯»å–EEPROMä¸­ä¿¡æ¯å¹¶åˆå§‹åŒ– å¼•è„šçŠ¶æ€
   int addr = 0;
   for (int i = 0; i < MaxNum; i++)
   {
@@ -46,25 +46,25 @@ void setup()
     ELMA.FA[i] = EEPROM.read(addr);
     addr += 1;
     pinMode(ELMA.pin[i], OUTPUT);
-    ELMA.state[i] = 1;   //1±íÊ¾¶Ïµç£»0±íÊ¾Í¨µç
+    ELMA.state[i] = 1;   //1è¡¨ç¤ºæ–­ç”µï¼›0è¡¨ç¤ºé€šç”µ
     digitalWrite(ELMA.pin[i], HIGH);
   }
 
-  //CAN ³õÊ¼»¯
-  while (CAN_OK != CAN.begin(CAN_500KBPS))              // ³õÊ¼»¯CANÓ²¼ş : baudrate = 500k
+  //CAN åˆå§‹åŒ–
+  while (CAN_OK != CAN.begin(CAN_500KBPS))              // åˆå§‹åŒ–CANç¡¬ä»¶ : baudrate = 500k
   {
-    Serial.println("CAN BUS Shield ³õÊ¼»¯Ê§°Ü£¡");
-    Serial.println(" ÇëÖØĞÂ³õÊ¼»¯ CAN BUS Shield £¡");
+    Serial.println("CAN BUS Shield åˆå§‹åŒ–å¤±è´¥ï¼");
+    Serial.println(" è¯·é‡æ–°åˆå§‹åŒ– CAN BUS Shield ï¼");
     delay(100);
   }
-  Serial.println("CAN BUS Shield ³õÊ¼»¯³É¹¦!");
+  Serial.println("CAN BUS Shield åˆå§‹åŒ–æˆåŠŸ!");
 
-// ¼àÊÓÖĞ¶ÏÊäÈëÒı½ÅµÄ±ä»¯
-  attachInterrupt(0, MCP2515_ISR, FALLING);    //Íâ²¿ÖĞ¶Ï£¬µ±int.0£¨D2Òı½Å£©µçÆ½¸Ä±äÊ±,´¥·¢ÖĞ¶Ïº¯ÊıMCP2515_ISR      FALLING-ÏÂ½µÑØ´¥·¢
+// ç›‘è§†ä¸­æ–­è¾“å…¥å¼•è„šçš„å˜åŒ–
+  attachInterrupt(0, MCP2515_ISR, FALLING);    //å¤–éƒ¨ä¸­æ–­ï¼Œå½“int.0ï¼ˆD2å¼•è„šï¼‰ç”µå¹³æ”¹å˜æ—¶,è§¦å‘ä¸­æ–­å‡½æ•°MCP2515_ISR      FALLING-ä¸‹é™æ²¿è§¦å‘
 
 }
 
-void MCP2515_ISR()   //ÖĞ¶Ïº¯Êı
+void MCP2515_ISR()   //ä¸­æ–­å‡½æ•°
 {
   flagRecv = 1;
 }
@@ -72,44 +72,44 @@ void MCP2515_ISR()   //ÖĞ¶Ïº¯Êı
 void loop()
 {
   if (flagRecv)
-  { // ¼ì²éÊÇ·ñÓĞÊı¾İÀ´µ½
-    flagRecv = 0;                   // Çå³ıÖĞ¶Ï±êÊ¶·û
+  { // æ£€æŸ¥æ˜¯å¦æœ‰æ•°æ®æ¥åˆ°
+    flagRecv = 0;                   // æ¸…é™¤ä¸­æ–­æ ‡è¯†ç¬¦
 
     while (CAN_MSGAVAIL == CAN.checkReceive())
     {
-      // ¶ÁÈ¡Êı¾İ  len: data length, buf: data buf
+      // è¯»å–æ•°æ®  len: data length, buf: data buf
       CAN.readMsgBuf(&len, buf);
     }
 
-    /*Èç¹ûµÚÒ»¸ö×Ö½ÚÖµ²»Îª0£¬ÔòÖğ¸ö¶ÁÈ¡½ÓÏÂÀ´6¸ö×Ö½ÚµÄÖµ£¬²¢´Ó×îºóÒ»¸ö×Ö½ÚÖĞ¶ÁÈ¡×´Ì¬Öµ£»
-      Èç¹ûµÚÒ»¸ö×Ö½ÚÖµÎª0£¬Ôò¶ÁÈ¡½ÓÏÂÀ´Èı¸ö×Ö½ÚµÄÊı´æ´¢ÔÚdata.dataÊı×éÖĞ*/
+    /*å¦‚æœç¬¬ä¸€ä¸ªå­—èŠ‚å€¼ä¸ä¸º0ï¼Œåˆ™é€ä¸ªè¯»å–æ¥ä¸‹æ¥6ä¸ªå­—èŠ‚çš„å€¼ï¼Œå¹¶ä»æœ€åä¸€ä¸ªå­—èŠ‚ä¸­è¯»å–çŠ¶æ€å€¼ï¼›
+      å¦‚æœç¬¬ä¸€ä¸ªå­—èŠ‚å€¼ä¸º0ï¼Œåˆ™è¯»å–æ¥ä¸‹æ¥ä¸‰ä¸ªå­—èŠ‚çš„æ•°å­˜å‚¨åœ¨data.dataæ•°ç»„ä¸­*/
     if (buf[0] != 0)
     {
-      //½«×îºóÒ»¸ö×Ö½ÚµÄÊı×ª»»Îª¶ş½øÖÆÊı±£´æÔÚdata.data1[8]Êı×éÖĞ
+      //å°†æœ€åä¸€ä¸ªå­—èŠ‚çš„æ•°è½¬æ¢ä¸ºäºŒè¿›åˆ¶æ•°ä¿å­˜åœ¨data.data1[8]æ•°ç»„ä¸­
       int a = N;
       while (a--)
       {
         data.data1[a] = YM & buf[7] >> a;
       }
 
-      //Öğ¸ö¶ÁÈ¡µÚ2-6¸ö×Ö½ÚµÄÖµ
+      //é€ä¸ªè¯»å–ç¬¬2-6ä¸ªå­—èŠ‚çš„å€¼
       for (int i = 1; i < 7; i++)
       {
-        if (buf[i] != 0)  //buf[i]²»Îª0Ôò¼ÌĞø£»Îª0ÔòbreakÖĞ¶Ï´Ë´ÎÑ­»·£¬¿ªÊ¼ÏÂÒ»Ñ­»·
+        if (buf[i] != 0)  //buf[i]ä¸ä¸º0åˆ™ç»§ç»­ï¼›ä¸º0åˆ™breakä¸­æ–­æ­¤æ¬¡å¾ªç¯ï¼Œå¼€å§‹ä¸‹ä¸€å¾ªç¯
         {
           for (int y = 0; y < MaxNum; y++)
           {
-            if (ELMA.ID[y] == buf[i])   //ÅĞ¶Ïbuf[i]ÊÇÔÚÃèÊöÄÄ¸öµç´Å·§ÉÏµÄµç´ÅÌú
+            if (ELMA.ID[y] == buf[i])   //åˆ¤æ–­buf[i]æ˜¯åœ¨æè¿°å“ªä¸ªç”µç£é˜€ä¸Šçš„ç”µç£é“
             {
               ELMA.state[y] = data.data1[i];
 
-              //ÅĞ¶ÏÊÇ·ñ´æÔÚ³åÍ»
-              //ÅĞ¶Ïµç´ÅÌúÔÚÄÄ¸öµç´Å·§ÉÏ£¬²¢ÅĞ¶ÏÊÇ·ñµç´Å·§ÉÏÁ½¸öµç´ÅÌúÊÇ·ñÍ¬Ê±½ÓÍ¨£¬ÊÇÔò±¨´í£¬²¢½áÊø£¬·ñÔò½«×´Ì¬·¢ËÍµ½¶ÔÓ¦µÄÒı½Å
+              //åˆ¤æ–­æ˜¯å¦å­˜åœ¨å†²çª
+              //åˆ¤æ–­ç”µç£é“åœ¨å“ªä¸ªç”µç£é˜€ä¸Šï¼Œå¹¶åˆ¤æ–­æ˜¯å¦ç”µç£é˜€ä¸Šä¸¤ä¸ªç”µç£é“æ˜¯å¦åŒæ—¶æ¥é€šï¼Œæ˜¯åˆ™æŠ¥é”™ï¼Œå¹¶ç»“æŸï¼Œå¦åˆ™å°†çŠ¶æ€å‘é€åˆ°å¯¹åº”çš„å¼•è„š
               for (int z = 0; z < MaxNum; z++)
               {
                 if (ELMA.FA[z] == ELMA.ID[y])
                 {
-                  if ((z % 2) != 0) //zÎ»ÆæÊı£¬µ«ÔÚÅ¼ÊıÎ»
+                  if ((z % 2) != 0) //zä½å¥‡æ•°ï¼Œä½†åœ¨å¶æ•°ä½
                   {
                     for (int b = 0; b < MaxNum; b++)
                     {
@@ -117,12 +117,12 @@ void loop()
                       {
                         if ((ELMA.state[b] == 0) && (ELMA.state[y] == 0))
                         {
-                          Serial.println("´íÎó£¡·§µÄÁ½¶ËÍ¬Ê±Í¨µç£¡");
+                          Serial.println("é”™è¯¯ï¼é˜€çš„ä¸¤ç«¯åŒæ—¶é€šç”µï¼");
                           break;
                         }
                         else
                         {
-                          //²»·¢Éú³åÍ»Ê±²Å»á½«×´Ì¬·¢ËÍµ½¶ÔÓ¦µÄÒı½Å
+                          //ä¸å‘ç”Ÿå†²çªæ—¶æ‰ä¼šå°†çŠ¶æ€å‘é€åˆ°å¯¹åº”çš„å¼•è„š
                           if (ELMA.state[y] == 1)
                             pinMode(ELMA.pin[y], HIGH);
                           else
@@ -133,7 +133,7 @@ void loop()
                       
                     }
                   }
-                  else  //zÎªÅ¼Êı£¬µ«ÔÚÆæÊıÎ»
+                  else  //zä¸ºå¶æ•°ï¼Œä½†åœ¨å¥‡æ•°ä½
                   {
                     for (int c = 0; c < MaxNum; c++)
                     {
@@ -141,12 +141,12 @@ void loop()
                       {
                         if ((ELMA.state[c] == 0) && (ELMA.state[y] == 0))
                         {
-                          Serial.println("´íÎó£¡·§µÄÁ½¶ËÍ¬Ê±Í¨µç£¡");
+                          Serial.println("é”™è¯¯ï¼é˜€çš„ä¸¤ç«¯åŒæ—¶é€šç”µï¼");
                           break;
                         }
                         else
                         {
-                          //²»·¢Éú³åÍ»Ê±²Å»á½«×´Ì¬·¢ËÍµ½¶ÔÓ¦µÄÒı½Å
+                          //ä¸å‘ç”Ÿå†²çªæ—¶æ‰ä¼šå°†çŠ¶æ€å‘é€åˆ°å¯¹åº”çš„å¼•è„š
                           if (ELMA.state[y] == 1)
                             pinMode(ELMA.pin[y], HIGH);
                           else
@@ -173,9 +173,9 @@ void loop()
         data.data1[a] = YM & buf[1] >> a;
         data.data2[a] = YM & buf[2] >> a;
         data.data3[a] = YM & buf[3] >> a;
-      }//½«Ê®½øÖÆ×ª»»Îª¶ş½øÖÆ´æ´¢ÔÚdata.dataÊı×éÖĞ
+      }//å°†åè¿›åˆ¶è½¬æ¢ä¸ºäºŒè¿›åˆ¶å­˜å‚¨åœ¨data.dataæ•°ç»„ä¸­
 
-      //½«20¸öÒı½Å×´Ì¬Ğ´ÈëstateÊı×é
+      //å°†20ä¸ªå¼•è„šçŠ¶æ€å†™å…¥stateæ•°ç»„
       for (int x = 0; x < MaxNum; x++)
       {
         if ((x >= 0) && (x < 8))
@@ -187,12 +187,12 @@ void loop()
       }
       for (int y = 0; y < MaxNum; y++)
       {
-        //ÅĞ¶Ïµç´ÅÌúÔÚÄÄ¸öµç´Å·§ÉÏ£¬²¢ÅĞ¶ÏÊÇ·ñµç´Å·§ÉÏÁ½¸öµç´ÅÌúÊÇ·ñÍ¬Ê±½ÓÍ¨£¬ÊÇÔò±¨´í£¬²¢½áÊø
+        //åˆ¤æ–­ç”µç£é“åœ¨å“ªä¸ªç”µç£é˜€ä¸Šï¼Œå¹¶åˆ¤æ–­æ˜¯å¦ç”µç£é˜€ä¸Šä¸¤ä¸ªç”µç£é“æ˜¯å¦åŒæ—¶æ¥é€šï¼Œæ˜¯åˆ™æŠ¥é”™ï¼Œå¹¶ç»“æŸ
         for (int z = 0; z < MaxNum; z++)
         {
           if (ELMA.FA[z] == ELMA.ID[y])
           {
-            if ((z % 2) != 0) //zÎ»ÆæÊı£¬µ«ÔÚÅ¼ÊıÎ»
+            if ((z % 2) != 0) //zä½å¥‡æ•°ï¼Œä½†åœ¨å¶æ•°ä½
             {
               for (int b = 0; b < MaxNum; b++)
               {
@@ -200,12 +200,12 @@ void loop()
                 {
                   if ((ELMA.state[b] == 0) && (ELMA.state[y] == 0))
                   {
-                    Serial.println("´íÎó£¡·§µÄÁ½¶ËÍ¬Ê±Í¨µç£¡");
+                    Serial.println("é”™è¯¯ï¼é˜€çš„ä¸¤ç«¯åŒæ—¶é€šç”µï¼");
                     break;
                   }
                   else
                   {
-                    //²»·¢Éú³åÍ»Ê±²Å»á½«×´Ì¬·¢ËÍµ½¶ÔÓ¦µÄÒı½Å
+                    //ä¸å‘ç”Ÿå†²çªæ—¶æ‰ä¼šå°†çŠ¶æ€å‘é€åˆ°å¯¹åº”çš„å¼•è„š
                     if (ELMA.state[y] == 1)
                       pinMode(ELMA.pin[y], HIGH);
                     else
@@ -215,7 +215,7 @@ void loop()
                 }
               }
             }
-            else  //zÎªÅ¼Êı£¬µ«ÔÚÆæÊıÎ»
+            else  //zä¸ºå¶æ•°ï¼Œä½†åœ¨å¥‡æ•°ä½
             {
               for (int c = 0; c < MaxNum; c++)
               {
@@ -223,12 +223,12 @@ void loop()
                 {
                   if ((ELMA.state[c] == 0) && (ELMA.state[y] == 0))
                   {
-                    Serial.println("´íÎó£¡·§µÄÁ½¶ËÍ¬Ê±Í¨µç£¡");
+                    Serial.println("é”™è¯¯ï¼é˜€çš„ä¸¤ç«¯åŒæ—¶é€šç”µï¼");
                     break;
                   }
                   else
                   {
-                    //²»·¢Éú³åÍ»Ê±²Å»á½«×´Ì¬·¢ËÍµ½¶ÔÓ¦µÄÒı½Å
+                    //ä¸å‘ç”Ÿå†²çªæ—¶æ‰ä¼šå°†çŠ¶æ€å‘é€åˆ°å¯¹åº”çš„å¼•è„š
                     if (ELMA.state[y] == 1)
                       pinMode(ELMA.pin[y], HIGH);
                     else
