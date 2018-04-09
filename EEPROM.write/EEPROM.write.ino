@@ -4,27 +4,13 @@
 
 #define MaxNum 20
 struct electromagnet {
-  char ID[MaxNum];     //电磁铁序号
-  char pin[MaxNum];   //每个电磁铁所对应的Arduino上引脚位置
-  char FA[MaxNum];   //同一个阀上两个电磁铁的连接方式
+  int ID[MaxNum]={1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20};     //电磁铁序号
+  int pin[MaxNum]={3,4,5,6,7,8,9,22,23,24,25,26,27,28,29,30,31,32,33,34};   //每个电磁铁所对应的Arduino上引脚位置
+  int FA[MaxNum]={1,7,10,4,5,9,2,8,6,3,13,19,11,18,15,16,17,14,12,20};   //同一个阀上两个电磁铁的连接方式
 } ELMA;
-
-
-int addr = 0;
-
-
-void setup() {
-  Serial.begin(115200);
-
-  int index = 1;
-  for (int i = 0; i < MaxNum; i++)
-  {
-    ELMA.ID[i] = index;
-    index += 1;
-  }
-
-  //example
-  ELMA.pin[0] = 3;  //电磁铁1所对应的引脚   //三位两通电磁换向阀
+/*   example
+  ELMA.pin[MaxNum]={3,4,5,6,7,8,9,22,23,24,25,26,27,28,29,30,31,32,33,34};
+  ELMA.pin[0] = 3;  //电磁铁1所对应的引脚   
   ELMA.pin[1] = 4; //电磁铁2所对应的引脚
   ELMA.pin[2] = 5; //电磁铁3所对应的引脚
   ELMA.pin[3] = 6; //电磁铁4所对应的引脚
@@ -43,10 +29,9 @@ void setup() {
   ELMA.pin[16] = 31; //电磁铁17所对应的引脚
   ELMA.pin[17] = 32; //电磁铁18所对应的引脚
   ELMA.pin[18] = 33; //电磁铁19所对应的引脚
-  ELMA.pin[19] = 34; //电磁铁20所对应的引脚
-
-
-  //example
+  ELMA.pin[19] = 34; //电磁铁20所对应的引脚  */
+  /*example
+ELMA.FA[MaxNum]={1,7,10,4,5,9,2,8,6,3,13,19,11,18,15,16,17,14,12,20};
   ELMA.FA[0] = 1;
   ELMA.FA[1] = 7;     //阀1的两个电磁铁对应的ID
   ELMA.FA[2] = 10;
@@ -66,18 +51,34 @@ void setup() {
   ELMA.FA[16] = 17;
   ELMA.FA[17] = 14;     //阀9的两个电磁铁对应的ID
   ELMA.FA[18] = 12;
-  ELMA.FA[19] = 20;     //阀10的两个电磁铁对应的ID
+  ELMA.FA[19] = 20;     //阀10的两个电磁铁对应的ID   */
+
+int addr = 0;
 
 
+void setup() {
+  Serial.begin(115200);
+/*
 for(;addr<20;addr++)
 EEPROM.write(addr,ELMA.ID[addr]);
 for(addr=20;addr<40;addr++)
 EEPROM.write(addr,ELMA.pin[addr-20]);
 for(addr=40;addr<60;addr++)
 EEPROM.write(addr,ELMA.FA[addr-40]);
+*/
 
+  for (int x = 0; x < MaxNum; x++)
+  {
+    EEPROM.write(addr, ELMA.ID[x]);
+    addr += 1;
+    EEPROM.write(addr, ELMA.pin[x]);
+    addr += 1;
+    EEPROM.write(addr, ELMA.FA[x]);
+    addr += 1;
+  }
 
-
+   Serial.print("电磁阀数据写入：");
+   Serial.print("\n");  
    Serial.print("**************************");
    Serial.print("\n");
    
@@ -88,7 +89,7 @@ EEPROM.write(addr,ELMA.FA[addr-40]);
      Serial.print(ELMA.ID[x]);
      Serial.print("*");
      Serial.print(ELMA.pin[x]);
-      Serial.print("*");
+      Serial.print("；");
    }
          Serial.print("\n");
       Serial.print("电磁铁连接方式为：");
@@ -104,17 +105,6 @@ EEPROM.write(addr,ELMA.FA[addr-40]);
   // turn the LED on when we're done
   digitalWrite(13, HIGH);
 
-/*
-  for (int x = 0; x < MaxNum; x++)
-  {
-    EEPROM.write(addr, ELMA.ID[x]);
-    addr += 1;
-    EEPROM.write(addr, ELMA.pin[x]);
-    addr += 1;
-    EEPROM.write(addr, ELMA.FA[x]);
-    addr += 1;
-  }
-*/
 }
 void loop() {
 
