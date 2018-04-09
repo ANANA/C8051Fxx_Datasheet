@@ -49,7 +49,7 @@ void setup()
     ELMA.state[i] = 1;   //1表示断电；0表示通电
     digitalWrite(ELMA.pin[i], HIGH);
   }
-  /*  //测试用
+  //测试用
     Serial.print("电磁阀数据读取：");
   Serial.print("\n");
   Serial.print("**************************");
@@ -74,10 +74,6 @@ void setup()
   }
   Serial.print("\n");
   Serial.print("**************************");
-
-  // turn the LED on when we're done
-  digitalWrite(13, HIGH);
-  */
 
   //CAN 初始化
   while (CAN_OK != CAN.begin(CAN_500KBPS))              // 初始化CAN硬件 : baudrate = 500k
@@ -156,18 +152,18 @@ void loop()
                             pinMode(ELMA.pin[y], HIGH);
                           else
                             pinMode(ELMA.pin[y], LOW);
-                            /*  //测试用
+                            //测试用
                             Serial.print("电磁阀ID：");
                             Serial.print(ELMA.ID[y]);
                             Serial.print(";");
                             Serial.print("电磁阀所对应的引脚：");
                             Serial.print(ELMA.pin[y]);
                             Serial.print(";");
-                            Serial.print("电磁阀所对应的引脚状态：")；
+                            Serial.print("电磁阀所对应的引脚状态：");
                             Serial.print(ELMA.state[y]);
                             Serial.print(";");
                             Serial.print("\n");
-                            */
+                          
                         }
                         break;
                       }
@@ -192,18 +188,18 @@ void loop()
                             pinMode(ELMA.pin[y], HIGH);
                           else
                             pinMode(ELMA.pin[y], LOW);
-                          /*  //测试用
+                          //测试用
                             Serial.print("电磁阀ID：");
                             Serial.print(ELMA.ID[y]);
                             Serial.print(";");
                             Serial.print("电磁阀所对应的引脚：");
                             Serial.print(ELMA.pin[y]);
                             Serial.print(";");
-                            Serial.print("电磁阀所对应的引脚状态：")；
+                            Serial.print("电磁阀所对应的引脚状态：");
                             Serial.print(ELMA.state[y]);
                             Serial.print(";");
                             Serial.print("\n");
-                            */
+                         
                         }
                         break;
                       }
@@ -264,18 +260,18 @@ void loop()
                       pinMode(ELMA.pin[y], HIGH);
                     else
                       pinMode(ELMA.pin[y], LOW);
-                    /*  //测试用
+                    //测试用
                             Serial.print("电磁阀ID：");
                             Serial.print(ELMA.ID[y]);
                             Serial.print(";");
                             Serial.print("电磁阀所对应的引脚：");
                             Serial.print(ELMA.pin[y]);
                             Serial.print(";");
-                            Serial.print("电磁阀所对应的引脚状态：")；
+                            Serial.print("电磁阀所对应的引脚状态：");
                             Serial.print(ELMA.state[y]);
                             Serial.print(";");
                             Serial.print("\n");
-                            */
+                        
                   }
                   break;
                 }
@@ -299,18 +295,18 @@ void loop()
                       pinMode(ELMA.pin[y], HIGH);
                     else
                       pinMode(ELMA.pin[y], LOW);
-                    /*  //测试用
+                  //测试用
                             Serial.print("电磁阀ID：");
                             Serial.print(ELMA.ID[y]);
                             Serial.print(";");
                             Serial.print("电磁阀所对应的引脚：");
                             Serial.print(ELMA.pin[y]);
                             Serial.print(";");
-                            Serial.print("电磁阀所对应的引脚状态：")；
+                            Serial.print("电磁阀所对应的引脚状态：");
                             Serial.print(ELMA.state[y]);
                             Serial.print(";");
                             Serial.print("\n");
-                            */
+                       
                   }
                   break;
                 }
