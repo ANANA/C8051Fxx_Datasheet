@@ -1,4 +1,4 @@
-﻿#include <SPI.h>
+#include <SPI.h>
 #include "mcp_can.h"
 #include <EEPROM.h>
 
@@ -10,30 +10,38 @@ unsigned char len = 0;
 unsigned char buf[8];
 
 #define MaxNum 20
-#define N 8   
+#define N 8
 #define YM 01//掩码
 /*位与&：查看一个位
   位移>>：向左移动位*/
 
 struct electromagnet
 {
-  char ID[MaxNum];     //电磁铁序号
-  char pin[MaxNum];   //每个电磁铁所对应的Arduino上引脚位置
-  char FA[MaxNum];    //阀的连接方式
-  char state[MaxNum];//每个电磁铁所对应引脚状态
+  int ID[MaxNum];     //电磁铁序号
+  int pin[MaxNum];   //每个电磁铁所对应的Arduino上引脚位置
+  int FA[MaxNum];    //阀的连接方式
+  int state[MaxNum];//每个电磁铁所对应引脚状态
 } ELMA;
 
 struct DATA
 {
-  char data1[8];
-  char data2[8];
-  char data3[8];
-  char data4[8];
+  int data1[8];
+  int data2[8];
+  int data3[8];
+  int data4[8];
 } data;
 
 void setup()
 {
-  Serial.begin(115200);         //baudrate=500k
+  Serial.begin(115200);
+
+  while (CAN_OK != CAN.begin(CAN_500KBPS))              // init can bus : baudrate = 500k
+  {
+    Serial.println("CAN BUS Shield init fail");
+    Serial.println(" Init CAN BUS Shield again");
+    delay(100);
+  }
+  Serial.println("CAN BUS Shield init ok!");
 
   //初始化读取EEPROM中信息并初始化 引脚状态
   int addr = 0;
@@ -49,17 +57,34 @@ void setup()
     ELMA.state[i] = 1;   //1表示断电；0表示通电
     digitalWrite(ELMA.pin[i], HIGH);
   }
+  //测试用
+  Serial.print("电磁阀数据读取：");
+  Serial.print("\n");
+  Serial.print("**************************");
+  Serial.print("\n");
 
-  //CAN 初始化
-  while (CAN_OK != CAN.begin(CAN_500KBPS))              // 初始化CAN硬件 : baudrate = 500k
+  Serial.print("电磁铁序号ID及所对应的引脚为：");
+  Serial.print("\n");
+  for (int x = 0; x < MaxNum; x++)
   {
-    Serial.println("CAN BUS Shield 初始化失败！");
-    Serial.println(" 请重新初始化 CAN BUS Shield ！");
-    delay(100);
+    Serial.print(ELMA.ID[x]);
+    Serial.print("*");
+    Serial.print(ELMA.pin[x]);
+    Serial.print("；");
   }
-  Serial.println("CAN BUS Shield 初始化成功!");
+  Serial.print("\n");
+  Serial.print("电磁铁连接方式为：");
+  Serial.print("\n");
+  for (int y = 0; y < MaxNum; y++)
+  {
+    Serial.print(ELMA.FA[y]);
+    Serial.print("*");
+  }
+  Serial.print("\n");
+  Serial.print("**************************");
 
-// 监视中断输入引脚的变化
+
+  // 监视中断输入引脚的变化
   attachInterrupt(0, MCP2515_ISR, FALLING);    //外部中断，当int.0（D2引脚）电平改变时,触发中断函数MCP2515_ISR      FALLING-下降沿触发
 
 }
@@ -127,10 +152,22 @@ void loop()
                             pinMode(ELMA.pin[y], HIGH);
                           else
                             pinMode(ELMA.pin[y], LOW);
+                          //测试用
+                          Serial.print("电磁阀ID：");
+                          Serial.print(ELMA.ID[y]);
+                          Serial.print(";");
+                          Serial.print("电磁阀所对应的引脚：");
+                          Serial.print(ELMA.pin[y]);
+                          Serial.print(";");
+                          Serial.print("电磁阀所对应的引脚状态：");
+                          Serial.print(ELMA.state[y]);
+                          Serial.print(";");
+                          Serial.print("\n");
+
                         }
                         break;
                       }
-                      
+
                     }
                   }
                   else  //z为偶数，但在奇数位
@@ -151,6 +188,18 @@ void loop()
                             pinMode(ELMA.pin[y], HIGH);
                           else
                             pinMode(ELMA.pin[y], LOW);
+                          //测试用
+                          Serial.print("电磁阀ID：");
+                          Serial.print(ELMA.ID[y]);
+                          Serial.print(";");
+                          Serial.print("电磁阀所对应的引脚：");
+                          Serial.print(ELMA.pin[y]);
+                          Serial.print(";");
+                          Serial.print("电磁阀所对应的引脚状态：");
+                          Serial.print(ELMA.state[y]);
+                          Serial.print(";");
+                          Serial.print("\n");
+
                         }
                         break;
                       }
@@ -185,6 +234,7 @@ void loop()
         else
           ELMA.state[x] = data.data4[x - 16];
       }
+
       for (int y = 0; y < MaxNum; y++)
       {
         //判断电磁铁在哪个电磁阀上，并判断是否电磁阀上两个电磁铁是否同时接通，是则报错，并结束
@@ -210,6 +260,18 @@ void loop()
                       pinMode(ELMA.pin[y], HIGH);
                     else
                       pinMode(ELMA.pin[y], LOW);
+                    //测试用
+                    Serial.print("电磁阀ID：");
+                    Serial.print(ELMA.ID[y]);
+                    Serial.print(";");
+                    Serial.print("电磁阀所对应的引脚：");
+                    Serial.print(ELMA.pin[y]);
+                    Serial.print(";");
+                    Serial.print("电磁阀所对应的引脚状态：");
+                    Serial.print(ELMA.state[y]);
+                    Serial.print(";");
+                    Serial.print("\n");
+
                   }
                   break;
                 }
@@ -233,12 +295,24 @@ void loop()
                       pinMode(ELMA.pin[y], HIGH);
                     else
                       pinMode(ELMA.pin[y], LOW);
+                    //测试用
+                    Serial.print("电磁阀ID：");
+                    Serial.print(ELMA.ID[y]);
+                    Serial.print(";");
+                    Serial.print("电磁阀所对应的引脚：");
+                    Serial.print(ELMA.pin[y]);
+                    Serial.print(";");
+                    Serial.print("电磁阀所对应的引脚状态：");
+                    Serial.print(ELMA.state[y]);
+                    Serial.print(";");
+                    Serial.print("\n");
+
                   }
                   break;
                 }
               }
             }
-             break;          
+            break;
           }
         }
       }
