@@ -8,7 +8,7 @@
 
 // the cs pin of the version after v1.1 is default to D9
 // v0.9b and v1.0 is default D10
-const int SPI_CS_PIN = 9;
+const int SPI_CS_PIN = 6;
 
 MCP_CAN CAN(SPI_CS_PIN);                                    // Set CS pin
 
@@ -36,8 +36,8 @@ void setup()
     /*
      * set mask, set both the mask to 0x3ff
      */
-    CAN.init_Mask(0, 0, 0x3ff);                         // there are 2 mask in mcp2515, you need to set both of them
-    CAN.init_Mask(1, 0, 0x3ff);
+    CAN.init_Mask(0, 0, 0b11111111000);                         // there are 2 mask in mcp2515, you need to set both of them
+    CAN.init_Mask(1, 0, 0b11111111000);
 
 
     /*
@@ -48,8 +48,8 @@ void setup()
 
     CAN.init_Filt(2, 0, 0x06);                          // there are 6 filter in mcp2515
     CAN.init_Filt(3, 0, 0x07);                          // there are 6 filter in mcp2515
-    CAN.init_Filt(4, 0, 0x08);                          // there are 6 filter in mcp2515
-    CAN.init_Filt(5, 0, 0x09);                          // there are 6 filter in mcp2515
+    CAN.init_Filt(4, 0, 0x02);                          // there are 6 filter in mcp2515
+    CAN.init_Filt(5, 0, 0x01);                          // there are 6 filter in mcp2515
 
 }
 
@@ -66,17 +66,17 @@ void loop()
         flagRecv = 0;                // clear flag
         CAN.readMsgBuf(&len, buf);    // read data,  len: data length, buf: data buf
 
-        Serial.println("\r\n------------------------------------------------------------------");
-        Serial.print("Get Data From id: ");
-        Serial.println(CAN.getCanId());
-        for(int i = 0; i<len; i++)    // print the data
-        {
-            Serial.print("0x");
-            Serial.print(buf[i], HEX);
-            Serial.print("\t");
-        }
-        Serial.println();
-
+//        Serial.println("\r\n------------------------------------------------------------------");
+//        Serial.print("Get Data From id: ");
+//        Serial.println(CAN.getCanId());
+//        for(int i = 0; i<len; i++)    // print the data
+//        {
+//            Serial.print("0x");
+//            Serial.print(buf[i], HEX);
+//            Serial.print("\t");
+//        }
+//        Serial.println();
+ CAN.printMessage();
     }
 }
 
