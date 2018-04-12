@@ -1,5 +1,4 @@
 #include <SPI.h>
-#include "mcp_can.h"
 #include<EEPROM.h>
 
 #define MaxNum 20
@@ -77,13 +76,10 @@ void setup() {
     addr += 1;
   }
 
-  Serial.print("电磁阀数据写入：");
-  Serial.print("\n");
-  Serial.print("**************************");
-  Serial.print("\n");
+  Serial.println("电磁阀数据写入：");
+  Serial.println("**************************");
+  Serial.println("电磁铁序号ID及所对应的引脚为：");
 
-  Serial.print("电磁铁序号ID及所对应的引脚为：");
-  Serial.print("\n");
   for (int x = 0; x < MaxNum; x++)
   {
     Serial.print(ELMA.ID[x]);
@@ -92,15 +88,14 @@ void setup() {
     Serial.print("；");
   }
   Serial.print("\n");
-  Serial.print("电磁铁连接方式为：");
-  Serial.print("\n");
+  Serial.println("电磁铁连接方式为：");
   for (int y = 0; y < MaxNum; y++)
   {
     Serial.print(ELMA.FA[y]);
     Serial.print("*");
   }
   Serial.print("\n");
-  Serial.print("**************************");
+  Serial.println("**************************");
 
 }
 void loop() {
